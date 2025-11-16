@@ -1,71 +1,55 @@
-Análise de Pool de Threads e Computação Assíncrona em Java
-Este repositório contém os códigos-fonte desenvolvidos para o Laboratório 11 da disciplina de Programação Concorrente. Os arquivos demonstram duas implementações de concorrência: um pool de threads manual (Atividade 1) e um pool de threads com futuros (Atividade 3), além de suas respectivas versões modificadas para geração de logs de teste.
+Desculpe pelo mal-entendido! Aqui está o conteúdo todo em uma célula só, conforme solicitado:
+# Implementação e Análise de Pools de Threads em Java
 
-1. MyPool.java
-Propósito: Implementação da Atividade 1 (versão base).
+Este repositório contém as implementações desenvolvidas para o Laboratório 11 da disciplina de Programação Concorrente. O objetivo é demonstrar, avaliar e comparar duas abordagens de concorrência em Java: um pool de threads manual (Atividade 1) e a computação assíncrona com `Futures` usando o `ExecutorService` (Atividade 3).
 
-O que faz: Este arquivo contém uma implementação de um pool de threads manual. A classe FilaTarefas gerencia uma LinkedList de tarefas (Runnable) e um conjunto de MyPoolThreads (threads trabalhadoras) que consomem essa fila usando wait() e notify().
+## Conteúdo do Repositório
 
-Execução: A classe MyPool (main) submete 25 tarefas (Primo) para um pool de 10 threads. A saída é impressa diretamente no console.
+Este projeto é dividido em 4 arquivos principais:
 
-Como compilar e executar:
+### 1. `MyPool.java`
+A implementação da Atividade 1. Este arquivo contém um pool de threads manual, implementado com a classe `FilaTarefas`, que gerencia uma `LinkedList` de tarefas `Runnable` e um conjunto de threads trabalhadoras que consomem essa fila usando `wait()` e `notify()`.
 
-Bash
+### 2. `FuturePool.java`
+A implementação da Atividade 3. Este arquivo usa a biblioteca `java.util.concurrent` para demonstrar a computação assíncrona. Ele utiliza um `ExecutorService` (`newFixedThreadPool`) e objetos `Future` para coletar resultados de tarefas `Callable` (a classe `VerificaPrimoTask`).
 
+### 3. `MyPoollog.java`
+Uma versão de teste em lote da Atividade 1. Este programa executa o pool manual com múltiplas combinações de threads (`T`) e repetições (`R`), redirecionando a saída de cada teste para um arquivo de log (ex: `T8R50.txt`).
+
+### 4. `FuturePoollog.java`
+Uma versão de teste em lote da Atividade 3. Este programa executa o pool com `Futures` com múltiplas combinações de threads (`T`) e tamanhos de entrada (`N`), redirecionando a saída de cada teste para um arquivo de log (ex: `T4N600.txt`).
+
+## Como Compilar e Executar
+
+Todos os arquivos podem ser compilados individualmente usando o `javac`. A execução é feita chamando `java` seguido do nome da classe que contém o método `main`.
+
+### 1. Atividade 1 (Pool Manual)
+
+#### Para compilar e executar a versão base (saída no console):
+
+```bash
 javac MyPool.java
 java MyPool
-2. FuturePool.java
-Propósito: Implementação da Atividade 3 (versão base).
 
-O que faz: Este arquivo utiliza o ExecutorService nativo do Java para demonstrar computação assíncrona com futuros. A classe VerificaPrimoTask implementa Callable para retornar um valor (a contagem de primos).
-
-Execução: A classe FuturePool (main) divide o trabalho de contar primos de 1 a 1000 entre 10 threads. Ela submete as tarefas (.submit()) e recebe objetos Future, que são usados para coletar os resultados parciais (.get()) e somar o total. A saída é impressa no console.
-
-Como compilar e executar:
-
-Bash
-
-javac FuturePool.java
-java FuturePool
-3. MyPoollog.java
-Propósito: Versão de teste em lote da Atividade 1 (MyPool.java).
-
-O que faz: Este arquivo modifica a implementação do pool manual para realizar testes em escala e gerar logs.
-
-Modificações:
-
-Geração de Log: A main (classe MyPoollog) redireciona toda a saída (System.out) para arquivos de texto.
-
-Identificação de Thread: As threads trabalhadoras agora são nomeadas (ex: "Thread 0", "Thread 1"), e o log de saída inclui qual thread executou qual tarefa.
-
-Testes em Lote: A main executa loops aninhados para testar múltiplas combinações de threads (6, 8, 10) e repetições de tarefas (25, 50, 75, 100).
-
-Execução: O programa não imprime no console. Ele gera 12 arquivos de log (ex: T6R25.txt, T8R50.txt, etc.) contendo os resultados de cada execução.
-
-Como compilar e executar:
-
-Bash
-
+Para compilar e executar a versão de teste em lote (saída em arquivos T<threads>R<repeticoes>.txt):
 javac MyPoollog.java
 java MyPoollog
-4. FuturePoollog.java
-Propósito: Versão de teste em lote da Atividade 3 (FuturePool.java).
 
-O que faz: Este arquivo modifica a implementação do ExecutorService para realizar testes em escala e gerar logs detalhados.
+2. Atividade 3 (Pool com Future)
+Para compilar e executar a versão base (saída no console):
+javac FuturePool.java
+java FuturePool
 
-Modificações:
-
-Geração de Log: A main (classe FuturePoollog) redireciona toda a saída (System.out) para arquivos de texto.
-
-Identificação de Thread: A tarefa VerificaPrimoTask agora imprime qual thread do pool (ex: pool-1-thread-1) está executando seu intervalo e o resultado.
-
-Testes em Lote: A main executa loops aninhados para testar 25 combinações de threads (2, 4, 6, 8, 10) e valores de N (200, 400, 600, 800, 1000).
-
-Execução: O programa imprime o progresso dos testes no console (System.err) e gera 25 arquivos de log (ex: T2N200.txt, T4N600.txt, etc.) com os resultados detalhados de cada execução.
-
-Como compilar e executar:
-
-Bash
-
+Para compilar e executar a versão de teste em lote (saída em arquivos T<threads>N<numeros>.txt):
 javac FuturePoollog.java
 java FuturePoollog
+
+Estratégias de Concorrência
+Atividade 1 (MyPool.java)
+Utiliza um padrão Produtor-Consumidor manual. A thread principal atua como produtora, adicionando tarefas Runnable a uma LinkedList compartilhada. As threads trabalhadoras (MyPoolThreads) atuam como consumidoras, usando synchronized, wait() (quando a fila está vazia) e notify() (para acordar uma thread) para gerenciar o acesso à fila.
+Atividade 3 (FuturePool.java)
+Utiliza o framework ExecutorService nativo do Java. O ExecutorService gerencia o pool e a fila de tarefas internamente. As tarefas são submetidas como Callable (que podem retornar um valor). O método submit() retorna um Future, que é uma "promessa" de um resultado. A thread principal pode então chamar future.get() para obter o resultado, bloqueando apenas se a tarefa ainda não tiver sido concluída.
+Licença
+Este repositório é disponibilizado sob a Licença MIT.
+
+Agora está tudo em um único bloco, sem quebras. Pode copiar diretamente para o seu `README.md`. Se precisar de mais alguma coisa, estou à disposição!
